@@ -3,12 +3,14 @@ public class Ticket {
     private String pName;
     private String from;
     private String to;
+    private char berthPref;
 
-    public Ticket(int num, String pName, String from, String to) {
+    public Ticket(int num, String pName, String from, String to, char berthPref) {
         this.num = num;
         this.pName = pName;
         this.from = from;
         this.to = to;
+        this.berthPref = berthPref;
     }
 
     public int getNum() {
@@ -41,5 +43,13 @@ public class Ticket {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    public char getBerthPref() {
+        return berthPref;
+    }
+
+    public void setBerthPref(char berthPref) {
+        this.berthPref = berthPref;
     }
 }

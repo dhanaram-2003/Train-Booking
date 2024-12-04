@@ -6,6 +6,9 @@ public class Main {
 
     static int numGen = 1;
     static List<Ticket> booked = new ArrayList<>();
+    static int upper = 1;
+    static int lower = 1;
+    static int middle = 1;
 
     public static void main(String[] args) {
 
@@ -46,15 +49,74 @@ public class Main {
 
     public static boolean bookTicket(){
         Scanner sc = new Scanner(System.in);
-        if(booked.size()<1){
+        if(booked.size()<3){
             System.out.print("Enter Your Name: ");
             String name = sc.nextLine();
             System.out.print("from: ");
             String from = sc.nextLine();
             System.out.print("to: ");
             String to = sc.nextLine();
-            Ticket ticket = new Ticket(numGen++,name,from,to);
-            booked.add(ticket);
+            char pref = 'l';
+            boolean flag=true;
+            while(flag){
+                System.out.print("Berth Preference [U/M/L]: ");
+                pref = sc.nextLine().charAt(0);
+                if(Character.toLowerCase(pref) != 'u' && Character.toLowerCase(pref) != 'm'&& Character.toLowerCase(pref) != 'l'){
+                    System.out.println("Enter valid berth!!!");
+                }
+                else flag=false;
+            }
+            Ticket ticket = new Ticket(numGen++,name,from,to,Character.toLowerCase(pref));
+            if(Character.toLowerCase(pref) == 'l'){
+                if(lower!=0){
+                    booked.add(ticket);
+                    lower--;
+                } else if (middle!=0) {
+                    ticket.setBerthPref('m');
+                    booked.add(ticket);
+                    System.out.println("Lower Berth Not Available! Middle Berth Confirmed!");
+                    middle--;
+                }
+                else {
+                    ticket.setBerthPref('u');
+                    booked.add(ticket);
+                    System.out.println("Lower Berth Not Available! Upper Berth Confirmed!");
+                    upper--;
+                }
+            } else if (Character.toLowerCase(pref) == 'm') {
+                if(middle!=0){
+                    booked.add(ticket);
+                    middle--;
+                } else if (lower!=0) {
+                    ticket.setBerthPref('l');
+                    booked.add(ticket);
+                    System.out.println("Middle Berth Not Available! Lower Berth Confirmed!");
+                    lower--;
+                }
+                else {
+                    ticket.setBerthPref('u');
+                    booked.add(ticket);
+                    System.out.println("Middle Berth Not Available! Upper Berth Confirmed!");
+                    upper--;
+                }
+            }
+            else {
+                if(upper!=0){
+                    booked.add(ticket);
+                    upper--;
+                } else if (middle!=0) {
+                    ticket.setBerthPref('m');
+                    booked.add(ticket);
+                    System.out.println("Upper Berth Not Available! Middle Berth Confirmed!");
+                    middle--;
+                }
+                else {
+                    ticket.setBerthPref('l');
+                    booked.add(ticket);
+                    System.out.println("Upper Berth Not Available! Lower Berth Confirmed!");
+                    lower--;
+                }
+            }
             return true;
         }
         else{
@@ -78,6 +140,7 @@ public class Main {
             System.out.println("Name:" + ticket.getpName());
             System.out.println("From:" + ticket.getFrom());
             System.out.println("T0:" + ticket.getTo());
+            System.out.println("Berth:"+ ticket.getBerthPref());
         }
         else System.out.println("Ticket Not Available !!!");
     }
@@ -89,6 +152,10 @@ public class Main {
         boolean flag = false;
         for(Ticket t:booked){
             if(t.getNum() == ticketNum) {
+                char pref = t.getBerthPref();
+                if(pref == 'u') upper++;
+                else if(pref == 'm') middle++;
+                else lower++;
                 flag = booked.remove(t);
                 break;
             }
